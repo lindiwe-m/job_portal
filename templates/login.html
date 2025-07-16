@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    /* Reset margin/padding and full viewport height for centering */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f8ff; /* light blue vibe */
+      color: #333;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top navbar */
+    nav.topbar {
+      background-color: #14532d;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      box-sizing: border-box;
+    }
+    nav.topbar .logo img {
+      height: 40px;
+    }
+    nav.topbar .nav-links a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    nav.topbar .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Main container with flex center */
+    .container {
+      background: white;
+      padding: 50px 60px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 128, 0, 0.1);
+      max-width: 800px;
+      width: 90vw;
+      min-height: 600px;
+      box-sizing: border-box;
+      text-align: center;
+      margin: 40px auto; /* below navbar */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 img {
+      width: 160px; /* bigger logo */
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 128, 0, 0.3);
+      margin-left: 0; /* remove extra left margin */
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;  /* center inputs */
+    }
+
+    input[type="email"],
+    input[type="password"],
+    button {
+      width: 280px;       /* fixed smaller width */
+      max-width: 100%;    /* responsive for very small screens */
+      padding: 12px;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      border: 2px solid #90ee90;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #008000;
+      outline: none;
+      box-shadow: 0 0 5px #008000aa;
+    }
+
+    button {
+      background-color: #008000;
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004d00;
+    }
+
+    .flash-messages {
+      color: #cc0000; /* bright red for errors */
+      margin-bottom: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 1rem;
+    }
+
+    p a {
+      color: #006400;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    p a:hover {
+      color: #004d00;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topbar">
+    <div class="logo">
+      <a href="{{ url_for('landing_page') }}">
+        <img src="{{ url_for('static', filename='bb-logo.png') }}" alt="Beier Logo" />
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="{{ url_for('landing_page') }}">Home</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      <a href="{{ url_for('login') }}">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h1>
+      <span>Login</span>
+      <img src="{{ url_for('static', filename='bb-logo.png') }}" alt="BB Logo">
+    </h1>
+
+    <form method="POST">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <p><a href="{{ url_for('register') }}">Don’t have an account? Register</a></p>
+    <p><a href="{{ url_for('reset_request') }}">Forgot your password?</a></p>
+
+  </div>
+
+</body>
+</html>

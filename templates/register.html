@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Beier Group{% endblock %}
+
+{% block content %}
+<style>
+  /* Keep form styling scoped inside content block */
+  .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 128, 0, 0.1);
+      max-width: 450px;
+      margin: 40px auto;
+      text-align: center;
+  }
+
+  .container .logo img {
+      height: 60px;
+      margin-bottom: 10px;
+  }
+
+  .container h1 {
+      color: #2e7d32;
+      margin-bottom: 30px;
+  }
+
+  .container input[type="email"],
+  .container input[type="password"],
+  .container input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+  }
+
+  .container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2e7d32;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+  }
+
+  .container button:hover {
+      background-color: #1b5e20;
+  }
+
+  .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+  }
+
+  .login-link a {
+      color: #2e7d32;
+      text-decoration: none;
+      font-weight: 600;
+  }
+
+  .login-link a:hover {
+      text-decoration: underline;
+  }
+</style>
+
+<div class="container">
+  <div class="logo">
+    <img src="{{ url_for('static', filename='bb-logo.png') }}" alt="BB Logo">
+  </div>
+  <h1>Beier Group Registration</h1>
+  <form method="POST">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+    <button type="submit">Register</button>
+  </form>
+  <div class="login-link">
+    Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+  </div>
+</div>
+{% endblock %}

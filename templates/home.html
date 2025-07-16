@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Home - Beier Group{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-top: 40px;">
+  <h1 style="color: #14532d;">Welcome to Beier Group </h1>
+  <p style="font-size: 18px;">
+    Your future starts here — explore opportunities and grow with us.
+  </p>
+  <img
+    src="{{ url_for('static', filename='pic.png') }}"
+    alt="Beier Banner"
+    style="width: 90%; max-width: 800px; margin-top: 20px; border-radius: 10px;"
+  />
+</div>
+
+<div class="quote" style="margin: 30px auto; font-style: italic;">
+  <p>"Even in our darkest hour, we must look to these green shoots of renewal."</p>
+  <span style="font-weight: bold; color: #555;">– President Cyril Ramaphosa</span>
+</div>
+
+<div class="description" style="margin: 20px auto; padding: 0 10%; font-size: 17px; color: #444;">
+  <p>
+    Our manufacturing mix includes environmental filtration products, technical and industrial textiles,
+    medical devices and advanced wound-care, PVC and PU coated materials, as well as personal protective
+    equipment and occupational health and safety services.
+  </p>
+</div>
+
+<style>
+  .button-container {
+    margin: 30px;
+  }
+
+  .action-button {
+    display: inline-block;
+    background-color: #2e7d32;
+    color: white;
+    padding: 12px 28px;
+    margin: 0 15px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 5px 10px rgba(46, 125, 50, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+
+  .action-button:hover {
+    background-color: #14532d;
+    box-shadow: 0 8px 15px rgba(20, 83, 45, 0.5);
+  }
+
+  .action-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 3px 7px rgba(20, 83, 45, 0.4);
+  }
+</style>
+
+<div class="button-container">
+  <a href="{{ url_for('register') }}" class="action-button">Register</a>
+  <a href="{{ url_for('login') }}" class="action-button">Login</a>
+</div>
+{% endblock %}

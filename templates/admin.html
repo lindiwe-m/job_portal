@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 95%;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 128, 0, 0.1);
+        border: 1px solid #ddd;
+        margin-top: 30px;
+    }
+
+    h1 {
+        color: #006400;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    p {
+        text-align: center;
+        color: #444;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 14px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    th {
+        background-color: #e6ffe6;
+        color: #004d00;
+    }
+
+    td {
+        background-color: #f5fff5;
+    }
+
+    a.button {
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .accept {
+        background-color: #28a745;
+    }
+
+    .reject {
+        background-color: #dc3545;
+    }
+
+    .no-cv {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+</style>
+
+<div class="container">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, {{ current_user.email }}</p>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Gender</th>
+            <th>Province</th>
+            <th>Country</th>
+            <th>CV</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name or '-' }}</td>
+            <td>{{ user.gender or '-' }}</td>
+            <td>{{ user.province or '-' }}</td>
+            <td>{{ user.country or '-' }}</td>
+            <td>
+                {% if user.cv_filename %}
+                    <a href="{{ url_for('uploaded_file', filename=user.cv_filename) }}">📄 Download</a>
+                {% else %}
+                    <span class="no-cv">N/A</span>
+                {% endif %}
+            </td>
+            <td>{{ user.application_status or 'Pending' }}</td>
+            <td>
+                <div class="action-buttons">
+                    {% if user.application_status != 'Accepted' %}
+                        <a class="button accept" href="{{ url_for('accept_application', user_id=user.id) }}">Accept</a>
+                    {% endif %}
+                    {% if user.application_status != 'Rejected' %}
+                        <a class="button reject" href="{{ url_for('reject_application', user_id=user.id) }}">Reject</a>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

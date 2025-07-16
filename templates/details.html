@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Your Profile{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5fff5;
+    color: #333;
+  }
+
+  h2 {
+    font-size: 2rem;
+    color: #008000;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+  }
+
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"],
+  input[type="file"],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  button {
+    background-color: #008000;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #006400;
+  }
+
+  ul.flash-messages {
+    color: red;
+    list-style-type: square;
+    margin-bottom: 20px;
+  }
+
+  .email-note {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #555;
+  }
+</style>
+
+<div class="form-container">
+  <h2>Complete Your Profile</h2>
+  <p class="email-note">You're updating profile for: <strong>{{ email }}</strong></p>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" enctype="multipart/form-data">
+    <label for="first_name">First Name:</label>
+    <input type="text" name="first_name" id="first_name" required>
+
+    <label for="gender">Gender:</label>
+    <select name="gender" id="gender" required>
+      <option value="">Select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="country">Country:</label>
+<select name="country" id="country" required>
+  <option value="">Select Country</option>
+  <option value="South Africa">South Africa</option>
+  <option value="Namibia">Namibia</option>
+  <option value="Zimbabwe">Zimbabwe</option>
+  <option value="Botswana">Botswana</option>
+  <option value="Lesotho">Lesotho</option>
+  <option value="Eswatini">Eswatini</option>
+  <option value="Mozambique">Mozambique</option>
+  <option value="United States">United States</option>
+  <option value="United Kingdom">United Kingdom</option>
+  <option value="India">India</option>
+</select>
+
+<label for="province">Province:</label>
+<select name="province" id="province" required>
+  <option value="">Select Province</option>
+  <option value="Eastern Cape">Eastern Cape</option>
+  <option value="Free State">Free State</option>
+  <option value="Gauteng">Gauteng</option>
+  <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+  <option value="Limpopo">Limpopo</option>
+  <option value="Mpumalanga">Mpumalanga</option>
+  <option value="Northern Cape">Northern Cape</option>
+  <option value="North West">North West</option>
+  <option value="Western Cape">Western Cape</option>
+</select>
+
+
+    <label for="postal_code">Postal Code:</label>
+    <input type="text" name="postal_code" id="postal_code" required>
+
+    <label for="cv">Upload CV:</label>
+    <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx" required>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}
