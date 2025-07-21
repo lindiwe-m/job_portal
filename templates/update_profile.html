@@ -1,4 +1,4 @@
- {% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Complete Your Profile{% endblock %}
 
@@ -76,7 +76,7 @@
 
 <div class="form-container">
   <h2>Complete Your Profile</h2>
-  <p class="email-note">You're updating profile for: <strong>{{ email }}</strong></p>
+  <p class="email-note">You're updating profile for: <strong>{{ user.email }}</strong></p>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -89,52 +89,43 @@
   {% endwith %}
 
   <form method="POST" enctype="multipart/form-data">
+    {# CSRF Token (only include if CSRF protection is active) #}
+    {% if csrf_token %}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% endif %}
+
     <label for="first_name">First Name:</label>
-    <input type="text" name="first_name" id="first_name" required>
+    <input type="text" name="first_name" id="first_name" value="{{ user.first_name or '' }}" required>
 
     <label for="gender">Gender:</label>
     <select name="gender" id="gender" required>
       <option value="">Select</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Other">Other</option>
+      <option value="Male" {% if user.gender == "Male" %}selected{% endif %}>Male</option>
+      <option value="Female" {% if user.gender == "Female" %}selected{% endif %}>Female</option>
+      <option value="Other" {% if user.gender == "Other" %}selected{% endif %}>Other</option>
     </select>
 
     <label for="country">Country:</label>
-<select name="country" id="country" required>
-  <option value="">Select Country</option>
-  <option value="South Africa">South Africa</option>
-  <option value="Namibia">Namibia</option>
-  <option value="Zimbabwe">Zimbabwe</option>
-  <option value="Botswana">Botswana</option>
-  <option value="Lesotho">Lesotho</option>
-  <option value="Eswatini">Eswatini</option>
-  <option value="Mozambique">Mozambique</option>
-  <option value="United States">United States</option>
-  <option value="United Kingdom">United Kingdom</option>
-  <option value="India">India</option>
-</select>
+    <select name="country" id="country" required>
+      <option value="">Select Country</option>
+      {% for c in ['South Africa','Namibia','Zimbabwe','Botswana','Lesotho','Eswatini','Mozambique','United States','United Kingdom','India'] %}
+        <option value="{{ c }}" {% if user.country == c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
 
-<label for="province">Province:</label>
-<select name="province" id="province" required>
-  <option value="">Select Province</option>
-  <option value="Eastern Cape">Eastern Cape</option>
-  <option value="Free State">Free State</option>
-  <option value="Gauteng">Gauteng</option>
-  <option value="KwaZulu-Natal">KwaZulu-Natal</option>
-  <option value="Limpopo">Limpopo</option>
-  <option value="Mpumalanga">Mpumalanga</option>
-  <option value="Northern Cape">Northern Cape</option>
-  <option value="North West">North West</option>
-  <option value="Western Cape">Western Cape</option>
-</select>
-
+    <label for="province">Province:</label>
+    <select name="province" id="province" required>
+      <option value="">Select Province</option>
+      {% for p in ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal','Limpopo','Mpumalanga','Northern Cape','North West','Western Cape'] %}
+        <option value="{{ p }}" {% if user.province == p %}selected{% endif %}>{{ p }}</option>
+      {% endfor %}
+    </select>
 
     <label for="postal_code">Postal Code:</label>
-    <input type="text" name="postal_code" id="postal_code" required>
+    <input type="text" name="postal_code" id="postal_code" value="{{ user.postal_code or '' }}" required>
 
     <label for="cv">Upload CV:</label>
-    <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx" required>
+    <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx">
 
     <button type="submit">Submit</button>
   </form>

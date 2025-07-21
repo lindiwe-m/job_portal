@@ -3,7 +3,7 @@
 
 {% block content %}
 <div style="text-align: center; margin-top: 40px;">
-  <h1 style="color: #14532d;">Welcome to Beier Group </h1>
+  <h1 style="color: #14532d;">WELCOME TO BEIER GROUP</h1>
   <p style="font-size: 18px;">
     Your future starts here — explore opportunities and grow with us.
   </p>
@@ -27,11 +27,13 @@
   </p>
 </div>
 
-<style>
-  .button-container {
-    margin: 30px;
-  }
+<!-- Register/Login Buttons -->
+<div class="button-container" style="text-align: center; margin-top: 30px;">
+  <a href="{{ url_for('register') }}" class="action-button">Register</a>
+  <a href="{{ url_for('login') }}" class="action-button">Login</a>
+</div>
 
+<style>
   .action-button {
     display: inline-block;
     background-color: #2e7d32;
@@ -46,20 +48,156 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     user-select: none;
   }
-
   .action-button:hover {
     background-color: #14532d;
     box-shadow: 0 8px 15px rgba(20, 83, 45, 0.5);
   }
-
   .action-button:active {
     transform: translateY(2px);
     box-shadow: 0 3px 7px rgba(20, 83, 45, 0.4);
   }
+
+  /* LEEH toggle button styling */
+  #leeh-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #2e7d32;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  /* LEEH chat box styling */
+  #leeh-chat {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    max-height: 400px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+    padding: 15px;
+    z-index: 1001;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+  }
+
+  #chat-window {
+    height: 250px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  #chat-input {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  #chat-send {
+    padding: 8px 15px;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    cursor:pointer;
+    border-radius: 5px;
+  }
 </style>
 
-<div class="button-container">
-  <a href="{{ url_for('register') }}" class="action-button">Register</a>
-  <a href="{{ url_for('login') }}" class="action-button">Login</a>
+<!-- LEEH Bot Toggle Button -->
+<button id="leeh-toggle" title="Open LEEĤ chat">🤖</button>
+
+<!-- LEEH Chat Window -->
+<div id="leeh-chat">
+  <div id="chat-window"></div>
+  <input id="chat-input" type="text" placeholder="Ask me about Beier Group..." />
+  <button id="chat-send">Send</button>
 </div>
+
+<script>
+  const toggleBtn = document.getElementById('leeh-toggle');
+  const chatWindow = document.getElementById('leeh-chat');
+  const input = document.getElementById('chat-input');
+  const send = document.getElementById('chat-send');
+  const chatContent = document.getElementById('chat-window');
+
+  toggleBtn.onclick = () => {
+    if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+      chatWindow.style.display = 'block';
+      toggleBtn.style.display = 'none';  // hide the toggle button when chat is open
+      addBotMessage("Hi, I'm LEEĤ 👋 — your virtual assistant. How can I help you today?");
+      input.focus();
+    }
+  };
+
+  function addBotMessage(msg) {
+    chatContent.innerHTML += `<div style="margin-bottom: 10px; color: green;"><strong>LEEĤ:</strong> ${msg}</div>`;
+    chatContent.scrollTop = chatContent.scrollHeight;
+  }
+
+  function addUserMessage(msg) {
+    chatContent.innerHTML += `<div style="margin-bottom: 5px; color: blue;"><strong>You:</strong> ${msg}</div>`;
+    chatContent.scrollTop = chatContent.scrollHeight;
+  }
+
+  function showTyping() {
+    chatContent.innerHTML += `<div id="typing" style="font-style: italic; color: grey;">LEEĤ is typing...</div>`;
+    chatContent.scrollTop = chatContent.scrollHeight;
+  }
+
+  function removeTyping() {
+    const typingDiv = document.getElementById('typing');
+    if (typingDiv) typingDiv.remove();
+  }
+
+  send.onclick = () => {
+    const msg = input.value.trim();
+    if (!msg) return;
+    addUserMessage(msg);
+    input.value = '';
+    showTyping();
+
+    fetch('/chatbot', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message: msg })
+    })
+    .then(res => res.json())
+    .then(data => {
+      removeTyping();
+      addBotMessage(data.reply);
+    })
+    .catch(() => {
+      removeTyping();
+      addBotMessage("Oops! Something went wrong. Please try again.");
+    });
+  };
+
+  // Optional: Let users press Enter to send message
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      send.click();
+      event.preventDefault();
+    }
+  });
+
+  // Close chat and show toggle button again if you want a close button (optional)
+  // For now, user closes by refreshing or ignoring the chat box.
+</script>
+
 {% endblock %}

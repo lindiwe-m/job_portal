@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Jobs{% endblock %}
+
+{% block content %}
+<h2>Available Jobs</h2>
+
+{% for job in jobs %}
+  <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+    <h3>{{ job.title }}</h3>
+    <p>{{ job.description }}</p>
+    <p><strong>Category:</strong> {{ job.category }}</p>
+
+    {% if current_user.is_authenticated %}
+      {% if job.id in user_applications %}
+        <p style="color: green;">✅ You already applied for this job.</p>
+      {% else %}
+        <form method="POST" action="{{ url_for('apply_job', job_id=job.id) }}">
+          
+          <button type="submit">Apply</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p><a href="{{ url_for('login') }}">Log in</a> to apply for jobs 🧑‍💻</p>
+    {% endif %}
+
+    <a href="{{ url_for('job_detail', job_id=job.id) }}">🔍 View Details</a>
+  </div>
+{% endfor %}
+{% endblock %}

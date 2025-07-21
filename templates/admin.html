@@ -1,126 +1,161 @@
 {% extends 'base.html' %}
-
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
 <style>
-    .container {
-        max-width: 95%;
-        margin: auto;
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 128, 0, 0.1);
-        border: 1px solid #ddd;
-        margin-top: 30px;
-    }
+  .admin-container {
+    max-width: 95%;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 128, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-    h1 {
-        color: #006400;
-        text-align: center;
-        margin-bottom: 10px;
-    }
+  .admin-container h2 {
+    color: #2d6a4f;
+    margin-bottom: 30px;
+    font-weight: bold;
+    text-align: center;
+  }
 
-    p {
-        text-align: center;
-        color: #444;
-        margin-bottom: 30px;
-        font-size: 1.1rem;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+  th, td {
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
 
-    th, td {
-        padding: 14px;
-        border: 1px solid #ccc;
-        text-align: left;
-    }
+  th {
+    background-color: #38b000;
+    color: white;
+  }
 
-    th {
-        background-color: #e6ffe6;
-        color: #004d00;
-    }
+  tr:hover {
+    background-color: #f0fff0;
+  }
 
-    td {
-        background-color: #f5fff5;
-    }
+  .button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
 
-    a.button {
-        padding: 6px 12px;
-        border-radius: 6px;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-    }
+  .accept {
+    background-color: #38b000;
+    color: white;
+  }
 
-    .accept {
-        background-color: #28a745;
-    }
+  .accept:hover {
+    background-color: #2a8600;
+  }
 
-    .reject {
-        background-color: #dc3545;
-    }
+  .reject {
+    background-color: #d00000;
+    color: white;
+  }
 
-    .no-cv {
-        color: #aaa;
-        font-style: italic;
-    }
+  .reject:hover {
+    background-color: #a60000;
+  }
 
-    .action-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
+  .viewed {
+    background-color: #0077b6;
+    color: white;
+  }
+
+  .viewed:hover {
+    background-color: #005f91;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .accepted-row {
+    background-color: #e6f9e6;
+  }
+
+  .rejected-row {
+    background-color: #ffe6e6;
+  }
 </style>
 
-<div class="container">
-    <h1>Admin Dashboard</h1>
-    <p>Welcome, {{ current_user.email }}</p>
+<div class="admin-container">
+  <h2>👩‍💼 Admin Dashboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>App ID</th>
+        <th>User Email</th>
+        <th>First Name</th>
+        <th>Job Title</th>
+        <th>CV</th>
+        <th>Status</th>
+        <th>CV Viewed</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for app in applications %}
+      <tr class="{% if app.status == 'Accepted' %}accepted-row{% elif app.status == 'Rejected' %}rejected-row{% endif %}">
+        <td>{{ app.id }}</td>
+        <td>{{ app.user.email }}</td>
+        <td>{{ app.user.first_name or '-' }}</td>
+        <td>{{ app.job.title }}</td>
+        <td>
+          {% if app.user.cv_filename %}
+          <a href="{{ url_for('uploaded_file', filename=app.user.cv_filename) }}" target="_blank">📄 Download</a>
+          {% else %}
+          <span style="color: grey;">N/A</span>
+          {% endif %}
+        </td>
+        <td>{{ app.status }}</td>
+        <td>{{ '✅ Yes' if app.cv_viewed else '❌ No' }}</td>
+        <td>
+          <div class="action-buttons">
+            <!-- Viewed -->
+            {% if not app.cv_viewed %}
+            <form action="{{ url_for('admin_update_application', app_id=app.id) }}" method="post">
+              <input type="hidden" name="action" value="viewed">
+              <button class="button viewed">👁️ Viewed</button>
+            </form>
+            {% endif %}
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>First Name</th>
-            <th>Gender</th>
-            <th>Province</th>
-            <th>Country</th>
-            <th>CV</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.first_name or '-' }}</td>
-            <td>{{ user.gender or '-' }}</td>
-            <td>{{ user.province or '-' }}</td>
-            <td>{{ user.country or '-' }}</td>
-            <td>
-                {% if user.cv_filename %}
-                    <a href="{{ url_for('uploaded_file', filename=user.cv_filename) }}">📄 Download</a>
-                {% else %}
-                    <span class="no-cv">N/A</span>
-                {% endif %}
-            </td>
-            <td>{{ user.application_status or 'Pending' }}</td>
-            <td>
-                <div class="action-buttons">
-                    {% if user.application_status != 'Accepted' %}
-                        <a class="button accept" href="{{ url_for('accept_application', user_id=user.id) }}">Accept</a>
-                    {% endif %}
-                    {% if user.application_status != 'Rejected' %}
-                        <a class="button reject" href="{{ url_for('reject_application', user_id=user.id) }}">Reject</a>
-                    {% endif %}
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+            <!-- Accept -->
+            {% if app.status != 'Accepted' and app.status != 'Rejected' %}
+            <form action="{{ url_for('admin_update_application', app_id=app.id) }}" method="post">
+              <input type="hidden" name="action" value="accept">
+              <button class="button accept">✅ Accept</button>
+            </form>
+            {% endif %}
+
+            <!-- Reject -->
+            {% if app.status != 'Accepted' and app.status != 'Rejected' %}
+            <form action="{{ url_for('admin_update_application', app_id=app.id) }}" method="post">
+              <input type="hidden" name="action" value="reject">
+              <button class="button reject">❌ Reject</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}
