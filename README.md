@@ -38,7 +38,7 @@ Admins can manage applications, view CVs, and update statuses with email notific
 - Admin Dashboard with Email Notifications
 
 #Hosting
-Currently hosted on [Render](https://your-render-link.com) for testing purposes.
+Currently hosted on [Render] https://job-portal-web-w095.onrender.com/ for testing purposes.
 Will be moved to a local server or production later.
 
 
